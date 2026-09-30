@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Jeres tilbud – LogoMarketing</title>
+<link rel="icon" href="../assets/img/logomarketing-ikon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Archivo:wdth,wght@75..100,400..700&family=Archivo+Black&display=swap">
+<link rel="stylesheet" href="../assets/css/site.css?v=20260929c">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../assets/js/config.js?v=20260929c"></script>
+<style>
+.qwrap{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,56px) clamp(16px,4vw,40px)}
+.qcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:clamp(20px,3.5vw,36px);margin-top:1.4rem}
+.mock{border-radius:10px;overflow:hidden;background:var(--canvas-2);margin-bottom:1.4rem}
+.mock img{width:100%;display:block}
+.qt{width:100%;border-collapse:collapse;font-size:.95rem}
+.qt th,.qt td{padding:.7rem 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.qt th{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.qt .r{text-align:right;white-space:nowrap}
+.qt tr.tot td{font-weight:700;font-size:1.05rem;border-bottom:0;border-top:2px solid var(--ink)}
+.accept{margin-top:1.6rem;padding:1.2rem;background:var(--canvas);border-radius:8px}
+.accept input{margin:.5rem 0 .8rem}
+.state{padding:.9rem 1rem;border-radius:8px;font-weight:600;margin-top:1rem}
+.state.ok{background:#E3F1E7;color:#1E5C34}.state.bad{background:#F6DFDC;color:#7A251C}
+.track{margin:1.6rem 0 .4rem;padding:1.2rem 1.3rem;background:var(--canvas);border-radius:10px}
+.track h2{font-size:1.15rem;margin:0 0 .2rem}
+.track .sub{color:var(--muted);font-size:.9rem;margin-bottom:1rem}
+.otl{list-style:none;padding:0;margin:0}
+.otl li{text-align:left;display:grid;grid-template-columns:22px 1fr;gap:.7rem;padding:.35rem 0 .55rem;position:relative}
+.otl li::before{content:"";position:absolute;left:10px;top:24px;bottom:-4px;width:2px;background:var(--line)}
+.otl li:last-child::before{display:none}
+.otl .odot{width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-size:.7rem;font-weight:700;color:#fff}
+.otl li.done .odot{background:#2F7D4A;border-color:#2F7D4A}
+.otl li.cur .odot{background:var(--signal);border-color:var(--signal);box-shadow:0 0 0 4px #FDE5D6}
+.otl b{display:block;text-align:left;font-size:.95rem}
+.otl li.pend b{color:var(--muted);font-weight:500}
+.otl small{color:var(--muted);font-size:.84rem;line-height:1.45}
+.otl li.cur small{color:var(--text)}
+.track .foot{margin-top:.8rem;font-size:.8rem;color:var(--muted)}
+.mock{position:relative}
+.mock .cap{display:block;font-size:.8rem;color:var(--muted);padding:.5rem .8rem;background:#fff;border-top:1px solid var(--line)}
+.mock .cap.ok{color:#1E5C34;background:#E3F1E7;font-weight:600}
+.proofimg{display:block;margin:.6rem 0 .2rem;max-width:420px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.proofimg img{display:block;width:100%}
+.approve{margin:.8rem 0 .4rem;padding:1rem;background:#fff;border:1px solid var(--line);border-left:4px solid var(--signal);border-radius:8px}
+.approve p{font-size:.88rem;color:var(--muted);margin:.3rem 0 .6rem;line-height:1.5}
+.approve input{margin:.2rem 0 .7rem}
+.qsum{margin-top:1.4rem}
+.qsum summary{cursor:pointer;color:var(--muted);font-size:.9rem;padding:.4rem 0}
+</style>
+</head>
+<body>
+<div class="qwrap">
+  <a class="brand" href="../" style="color:var(--ink)"><svg width="50" height="34" viewBox="0 0 88 60"><rect width="88" height="60" rx="12" fill="#0F1F2E"/><text x="44.5" y="39" text-anchor="middle" font-family="Archivo Black,Archivo,sans-serif" font-size="26" letter-spacing="1" fill="#F4F5F1">LOGO</text></svg><span class="lt">Marketing</span></a>
+  <div id="app" class="qcard"><p style="color:var(--muted)">Henter tilbud …</p></div>
+  <p style="margin-top:1.4rem;font-size:.85rem;color:var(--muted)">LogoMarketing · Aulum · CVR 38147331 · <a href="mailto:info@logomarketing.dk">info@logomarketing.dk</a> · 97 47 31 78 · <a href="../#/vilkaar">Handelsbetingelser</a></p>
+</div>
+<script>
+(async function(){
+  const $=s=>document.querySelector(s); const app=$('#app');
+  const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmt=n=>Math.round(+n||0).toLocaleString('da-DK')+' kr.';
+  const code=new URLSearchParams(location.search).get('k')||location.pathname.split('/').filter(Boolean).pop();
+  const sb=window.LM_SUPABASE; if(!sb){app.innerHTML='<p>Siden er ikke sat op endnu.</p>';return}
+  if(!code){app.innerHTML='<p>Der mangler en tilbudskode i linket.</p>';return}
+  const {data:q,error}=await sb.from('quotes').select('*').eq('code',code).maybeSingle();
+  if(error||!q){app.innerHTML='<h2>Vi kunne ikke finde tilbuddet</h2><p style="color:var(--muted);margin-top:.6rem">Tjek linket, eller skriv til <a href="mailto:info@logomarketing.dk">info@logomarketing.dk</a>.</p>';return}
+  sb.rpc('mark_quote_seen',{p_code:code});
+  const lines=q.lines||[]; const sub=lines.reduce((a,x)=>a+(+x.qty||0)*(+x.unit||0),0); const ship=+q.shipping||0; const tot=sub+ship; const moms=tot*0.25;
+  const expired=q.valid_until&&new Date(q.valid_until)<new Date(new Date().toDateString());
+  const accepted=q.status==='accepteret';
+  document.title=(accepted?'Jeres ordre – ':'Tilbud til ')+q.org+' – LogoMarketing';
+  const D=s=>s?new Date(String(s).slice(0,10)+'T00:00:00'):null;
+  const df=d=>d?d.toLocaleDateString('da-DK',{day:'numeric',month:'long'}):'';
+  const dfy=d=>d?d.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'}):'';
+
+  // Ordre-tidslinje (kun når tilbuddet er accepteret) – data fra quote_status(), som kun udleverer status og datoer
+  let track='';
+  if(accepted){
+    const {data:s}=await sb.rpc('quote_status',{p_code:code}); const st=s||{};
+    const ORDER=['korrektur','godkendt','bestilt','modtaget','leveret','faktureret'];
+    const idx=st.prod_step?ORDER.indexOf(st.prod_step):-1;
+    const ev=D(st.event_date), eta=D(st.eta_date), ord=D(st.ordered_at), acc=st.accepted_at?new Date(st.accepted_at):null;
+    const proof=st.proof_url||'', pv=st.proof_version||1, pApproved=!!st.proof_approved_at, isPdf=/\.pdf($|\?)/i.test(proof);
+    const proofView=proof?(isPdf?'<a class="btn btn-ghost btn-sm" href="'+esc(proof)+'" target="_blank" rel="noopener">Åbn korrektur (PDF) ↗</a>':'<a href="'+esc(proof)+'" target="_blank" rel="noopener" class="proofimg"><img src="'+esc(proof)+'" alt="Korrektur v'+pv+'"></a>'):'';
+    const approveBox=(proof&&!pApproved&&idx<=0)?'<div class="approve" id="apr"><b>Er korrekturen, som den skal være?</b><p>Tjek logo, farver, tekst og stavning. Det, I godkender her, er det, der bliver produceret – vi kan ikke rette efter godkendelsen.</p><input type="text" id="aprName" placeholder="Dit navn" style="max-width:300px"><br><button class="btn btn-signal" id="aprBtn">Ja, korrekturen er godkendt</button> <a class="btn btn-ghost" href="mailto:info@logomarketing.dk?subject='+encodeURIComponent('Rettelser til korrektur – '+q.org)+'">Vi har rettelser</a><div id="aprMsg"></div></div>':'';
+    const steps=[
+      {t:'Tilbud accepteret', done:true, cur:false, s:acc?dfy(acc):''},
+      {t:'Korrektur sendt til jer', done:idx>=0, cur:idx<=0, s:idx<=0?(proof?'Korrektur v'+pv+' er klar herunder.'+(pApproved?'':' Kig den grundigt igennem og godkend den nederst i dette trin.'):'Vi laver en korrektur af jeres design og lægger den her, så snart den er klar – I får besked på mail.'):'Version '+pv+' sendt.', extra:idx<=0?proofView+approveBox:''},
+      {t:'Korrektur godkendt', done:idx>=1, cur:idx===1, s:pApproved?'Godkendt af '+esc(st.proof_approved_by||'jer')+' '+dfy(new Date(st.proof_approved_at))+'.'+(idx===1?' Tak! Vi sætter produktionen i gang hos fabrikken.':''):idx>=1?'Godkendt af jer.':'Afventer jeres godkendelse.'},
+      {t:'I produktion', done:idx>=2, cur:idx===2, s:idx>=2?('Sat i produktion'+(ord?' '+df(ord):'')+'.'+(idx===2?(eta?' Forventes hos os i Aulum <b style="display:inline">'+df(eta)+'</b>.':' Vi opdaterer med forventet dato, så snart fabrikken har bekræftet.'):'')):'Typisk 4–6 uger fra godkendt korrektur.'},
+      {t:'Modtaget i Aulum', done:idx>=3, cur:idx===3, s:idx>=3?'Varerne er kommet hjem, og vi tjekker tryk og farver igennem.':'Vi kvalitetstjekker alt, før det sendes videre.'},
+      {t:'Leveret til jer', done:idx>=4, cur:idx===4, s:idx>=4?'Afleveret til jer. God fornøjelse'+(ev?' til '+df(ev):'')+'!':(ev?'Klar inden jeres arrangement '+df(ev)+'.':'')},
+    ];
+    window.__proofTop=(proof&&pApproved&&!isPdf)?'<div class="mock"><img src="'+esc(proof)+'" alt="Godkendt korrektur"><span class="cap ok">✓ Godkendt korrektur v'+pv+' – det her går i produktion</span></div>':'';
+    const upd=st.updated_at?new Date(st.updated_at):null;
+    track='<div class="track"><h2>Sådan går det med jeres ordre</h2><p class="sub">'+(ev?'Jeres arrangement: <b>'+dfy(ev)+'</b> · ':'')+'Siden her opdateres løbende – gem linket.</p><ul class="otl">'+
+      steps.map(x=>'<li class="'+(x.done&&!x.cur?'done':x.cur?'cur':'pend')+'"><span class="odot">'+(x.done&&!x.cur?'✓':'')+'</span><div><b>'+x.t+'</b><small>'+x.s+'</small>'+(x.extra||'')+'</div></li>').join('')+
+      '</ul><p class="foot">'+(upd?'Sidst opdateret '+upd.toLocaleDateString('da-DK',{day:'numeric',month:'long'})+'. ':'')+'Spørgsmål? Ring 97 47 31 78 eller svar på vores mail.</p></div>';
+  }
+
+  app.innerHTML=
+    (accepted&&window.__proofTop?window.__proofTop:(q.mockup_url?'<div class="mock"><img src="'+esc(q.mockup_url)+'" alt="Mockup"><span class="cap">'+(accepted?'Mockup fra tilbuddet – den endelige korrektur ligger under "Korrektur sendt til jer"':'Mockup')+'</span></div>':''))+
+    '<p class="eyebrow">'+(accepted?'Jeres ordre':'Tilbud')+' · '+esc(q.org)+'</p><h1 style="font-size:clamp(1.8rem,4vw,2.6rem);margin:.4rem 0 1rem">'+(q.contact_name?'Hej '+esc(q.contact_name.split(' ')[0])+'.':'Hej.')+'</h1>'+
+    (accepted?track+'<details class="qsum"><summary>Se det accepterede tilbud</summary>':'<p style="color:var(--muted);max-width:60ch;line-height:1.6">'+esc(q.intro||'').replace(/\n/g,'<br>')+'</p>')+
+    '<table class="qt" style="margin-top:1.4rem"><thead><tr><th>Beskrivelse</th><th class="r">Antal</th><th class="r">Stk.</th><th class="r">I alt</th></tr></thead><tbody>'+
+    lines.map(x=>'<tr><td>'+esc(x.title)+'</td><td class="r num">'+(+x.qty||0)+'</td><td class="r num">'+fmt(x.unit)+'</td><td class="r num">'+fmt((+x.qty||0)*(+x.unit||0))+'</td></tr>').join('')+
+    (ship?'<tr><td>Fragt</td><td></td><td></td><td class="r num">'+fmt(ship)+'</td></tr>':'')+
+    '<tr class="tot"><td colspan="3">I alt ekskl. moms</td><td class="r num">'+fmt(tot)+'</td></tr>'+
+    '<tr><td colspan="3" style="color:var(--muted);border-bottom:0">Moms 25 %</td><td class="r num" style="color:var(--muted);border-bottom:0">'+fmt(moms)+'</td></tr>'+
+    '<tr><td colspan="3" style="border-bottom:0">I alt inkl. moms</td><td class="r num" style="border-bottom:0">'+fmt(tot+moms)+'</td></tr></tbody></table>'+
+    '<dl class="kv" style="margin-top:1.4rem"><dt>Levering</dt><dd>'+esc(q.delivery_text||'Bekræftes ved godkendt korrektur')+'</dd><dt>Betaling</dt><dd>Faktura ved bekræftet ordre, 8 dages betalingsfrist</dd><dt>Gyldigt til</dt><dd>'+(q.valid_until?new Date(q.valid_until).toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'}):'–')+'</dd></dl>'+
+    (accepted?'</details>':
+     expired?'<div class="state bad">Tilbuddet er udløbet. Skriv til os, så fornyer vi det – priserne har sjældent ændret sig.</div>':
+     '<div class="accept" id="acc"><b>Vil I gå videre?</b><p style="color:var(--muted);font-size:.92rem;margin-top:.3rem">Skriv dit navn og tryk på knappen. Det er ikke en betaling – vi sender først en korrektur, I skal godkende, før noget går i produktion.</p><input type="text" id="accName" placeholder="Dit navn" style="max-width:320px"><br><button class="btn btn-signal" id="accBtn">Ja, vi accepterer tilbuddet</button><div id="accMsg"></div></div>')+
+    (accepted?'':'<p style="margin-top:1.4rem;font-size:.9rem;color:var(--muted)">Spørgsmål eller ændringer? Svar på mailen, eller ring 97 47 31 78.</p>');
+  const ab=$('#aprBtn'); if(ab) ab.onclick=async()=>{const n=$('#aprName').value.trim(); if(!n){$('#aprMsg').innerHTML='<div class="state bad">Skriv lige dit navn først.</div>';return} if(!confirm('Godkend korrekturen som den er? Vi producerer præcis det, der er vist.')) return; ab.disabled=true;
+    const {data,error}=await sb.rpc('approve_proof',{p_code:code,p_name:n});
+    if(error||!data||!data.ok){$('#aprMsg').innerHTML='<div class="state bad">'+esc(data?.error||error?.message||'Noget gik galt')+'</div>'; ab.disabled=false; return}
+    $('#apr').innerHTML='<div class="state ok">Tak, '+esc(n)+'! Korrekturen er godkendt, og vi sætter produktionen i gang.</div>'; setTimeout(()=>location.reload(),1800)};
+  const b=$('#accBtn'); if(b) b.onclick=async()=>{const n=$('#accName').value.trim(); if(!n){$('#accMsg').innerHTML='<div class="state bad">Skriv lige dit navn først.</div>';return} b.disabled=true;
+    const {data,error}=await sb.rpc('accept_quote',{p_code:code,p_name:n});
+    if(error||!data||!data.ok){$('#accMsg').innerHTML='<div class="state bad">'+esc(data?.error||error?.message||'Noget gik galt')+'</div>'; b.disabled=false; return}
+    $('#acc').innerHTML='<div class="state ok">Tak, '+esc(n)+'! Tilbuddet er accepteret. Vi sender korrektur til godkendelse inden for 2 hverdage.</div>'; setTimeout(()=>location.reload(),1800)};
+})();
+</script>
+</body>
+</html>

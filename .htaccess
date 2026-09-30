@@ -1,0 +1,57 @@
+# LogoMarketing – Apache/LiteSpeed (Nordicway)
+Options -Indexes
+AddDefaultCharset UTF-8
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # AutoSSL skal altid kunne nå .well-known – ingen redirects her
+  RewriteRule ^\.well-known/ - [L]
+
+  # www → uden www, og altid https
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # Testversionen lå på /ny/ – gamle tilbudslinks (/ny/t/?k=…) skal stadig virke
+  RewriteRule ^ny(/(.*))?$ https://%{HTTP_HOST}/$2 [R=301,L]
+
+  # Gamle WordPress-adresser → nye sider (NE = behold #)
+  RewriteRule ^(reklametelte|tents)/?$ https://%{HTTP_HOST}/#/telte [R=301,NE,L]
+  RewriteRule ^(dogtags|branded-dogtags)/?$ https://%{HTTP_HOST}/#/laser [R=301,NE,L]
+  RewriteRule ^logo-merchandise/?$ https://%{HTTP_HOST}/#/merch [R=301,NE,L]
+  RewriteRule ^(fa-et-tilbud|contact|kontakt)/?$ https://%{HTTP_HOST}/#tilbud [R=301,NE,L]
+  RewriteRule ^(about|om-os)/?$ https://%{HTTP_HOST}/#historie [R=301,NE,L]
+  RewriteRule ^(home|blog|hello-world|category/.*)/?$ https://%{HTTP_HOST}/ [R=301,L]
+  RewriteRule ^(foreninger|til-foreninger)/?$ https://%{HTTP_HOST}/#/foreninger [R=301,NE,L]
+  RewriteRule ^(handelsbetingelser|vilkaar|privatlivspolitik)/?$ https://%{HTTP_HOST}/#/vilkaar [R=301,NE,L]
+
+  # WordPress findes ikke længere – svar "væk" til bots, send billedlinks til forsiden
+  RewriteRule ^(wp-login\.php|xmlrpc\.php|wp-admin/?.*)$ - [G,L]
+  RewriteRule ^wp-content/ https://%{HTTP_HOST}/ [R=301,L]
+
+  # Filer i repoet, der ikke skal kunne hentes
+  RewriteRule ^(supabase/|deploy\.sh|\.cpanel\.yml|.*\.md$) - [F,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+  <FilesMatch "\.(jpg|jpeg|png|svg|webp|woff2?)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(html|xml|txt)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript image/svg+xml application/xml text/plain
+</IfModule>

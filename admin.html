@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin – LogoMarketing</title>
+<link rel="icon" href="assets/img/logomarketing-ikon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Archivo:wdth,wght@75..100,400..700&family=Archivo+Black&display=swap">
+<link rel="stylesheet" href="assets/css/site.css?v=20260929c">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="assets/js/config.js?v=20260929c"></script>
+<style>
+body{background:#EEF0EA}
+#admin{display:block}
+.login{max-width:420px;margin:12vh auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:clamp(22px,4vw,36px)}
+.login h1{font-size:1.6rem;margin-bottom:.4rem}
+.login p{color:var(--muted);font-size:.95rem;margin-bottom:1.2rem}
+.login .field{margin-bottom:1rem}
+.msg{margin-top:1rem;font-size:.9rem;padding:.7rem .9rem;border-radius:6px;background:#E3F1E7;color:#1E5C34}
+.msg.bad{background:#F6DFDC;color:#7A251C}
+.quote-form{display:grid;gap:.8rem}
+.qlines{display:grid;gap:.4rem}
+.qline{display:grid;grid-template-columns:1fr 70px 110px 32px;gap:.4rem;align-items:center}
+.qline input{padding:.5rem .6rem}
+.qline button{border:0;background:none;color:var(--bad);cursor:pointer;font-size:1.1rem}
+.alist[hidden]{display:none}
+.stepper{display:flex;gap:3px;margin:.35rem 0 .25rem}
+.stepper .sp{height:6px;flex:1;border-radius:3px;background:var(--line)}
+.stepper .sp.on{background:var(--ok)}
+.stepper .sp.cur{background:var(--signal)}
+.prow{grid-template-columns:1.1fr 1fr 1fr .9fr auto}
+@media (max-width:900px){.prow{grid-template-columns:1fr 1fr}}
+.prodbox{background:#fff;border:1px solid var(--line);border-left:4px solid var(--signal);border-radius:8px;padding:.9rem 1rem}
+.prodsteps{display:flex;flex-wrap:wrap;gap:.25rem .9rem;list-style:none;padding:0;margin:.4rem 0 0;font-size:.8rem;color:var(--muted)}
+.prodsteps li.done{color:var(--ok);text-decoration:line-through}
+.prodsteps li.cur{color:var(--signal);font-weight:600}
+.proof{margin-top:.8rem;padding-top:.8rem;border-top:1px dashed var(--line)}
+.proofimg{display:block;margin-top:.5rem;max-width:320px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff}
+.proofimg img{display:block;width:100%}
+.linkbox{background:var(--canvas);border:1px dashed var(--alu);border-radius:6px;padding:.6rem .8rem;font-size:.86rem;word-break:break-all}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 88 60"><rect width="88" height="60" rx="12" fill="currentColor"/><text x="44.5" y="39" text-anchor="middle" font-family="Archivo Black,Archivo,sans-serif" font-size="26" letter-spacing="1" fill="var(--canvas)">LOGO</text></symbol>
+</svg>
+
+<div id="loginView" class="login" hidden>
+  <a class="brand" href="./" style="margin-bottom:1.2rem"><svg width="44" height="30"><use href="#mark"/></svg><span class="lt">Marketing</span></a>
+  <h1>Log ind i admin</h1>
+  <p>Skriv din mail, så sender vi et login-link. Kun adresser på admin-listen kan komme ind.</p>
+  <div class="field"><label for="loginMail">E-mail</label><input type="email" id="loginMail" value="" placeholder="info@logomarketing.dk" autocomplete="email"></div>
+  <button class="btn btn-signal" id="loginBtn" style="width:100%;justify-content:center">Send login-link</button>
+  <div id="loginMsg" class="msg" hidden></div>
+</div>
+
+<div id="admin" hidden>
+  <div class="abar">
+    <div class="wrap">
+      <a class="brand" href="./"><svg width="44" height="30" style="color:#F4F5F1;--canvas:#0F1F2E"><use href="#mark"/></svg><span class="lt" style="color:#F4F5F1">Marketing</span>&nbsp;<span style="font-family:var(--body);font-weight:500;font-size:.8rem;color:#B9C3CC">Admin</span></a>
+      <div class="atabs" role="tablist">
+        <button role="tab" aria-selected="true" data-view="pipeline">Pipeline</button>
+        <button role="tab" aria-selected="false" data-view="kunder">Kunder</button>
+        <button role="tab" aria-selected="false" data-view="produktion">Produktion</button>
+        <button role="tab" aria-selected="false" data-view="tilbud">Tilbud</button>
+      </div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="btn btn-signal btn-sm" id="newLead">+ Nyt lead</button>
+        <button class="btn btn-ghost btn-sm" id="logout" style="color:#fff">Log ud</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-block:18px 60px">
+    <div class="kpis" id="kpis"></div>
+    <div id="v-pipeline">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem;margin-bottom:12px"><h3>Pipeline</h3><span class="sample" id="who"></span></div>
+      <div class="board" id="board"></div>
+    </div>
+    <div id="v-kunder" hidden><h3 style="margin-bottom:12px">Kunder</h3><div class="alist" id="custList"></div></div>
+    <div id="v-produktion" hidden>
+      <h3 style="margin-bottom:4px">I produktion</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px">Vundne ordrer. Tryk på den orange knap, når næste skridt er sket – så flytter ordren sig selv. Rækkefølgen: korrektur sendt → korrektur godkendt → bestilt → modtaget → leveret → faktureret. "Bestil senest" er arrangementsdato − 33 dage.</p>
+      <div class="alist" id="prodList"></div>
+      <h3 style="margin:28px 0 4px">Afventer svar på tilbud</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:12px">Ikke vundet endnu – men hvis de siger ja, skal der bestilles senest her.</p>
+      <div class="alist" id="waitList"></div>
+      <p style="margin-top:28px"><button class="btn btn-ghost btn-sm" id="doneToggle">Afsluttede ordrer (<span id="doneCount">0</span>)</button></p>
+      <div class="alist" id="doneList" hidden></div>
+    </div>
+    <div id="v-tilbud" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.6rem;margin-bottom:12px"><h3>Tilbud med egen side</h3><button class="btn btn-ink btn-sm" id="newQuote">+ Nyt tilbud</button></div>
+      <div class="alist" id="quoteList"></div>
+    </div>
+  </div>
+
+  <div class="drawer" id="drawer"><div class="pane" id="pane" role="dialog" aria-modal="true"></div></div>
+</div>
+
+<script src="assets/js/admin.js?v=20260929c"></script>
+</body>
+</html>
