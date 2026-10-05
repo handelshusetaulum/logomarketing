@@ -6,7 +6,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
-DOCROOT="${DOCROOT:-$HOME/logomarketing.dk}"   # ret hvis cPanel har valgt en anden sti
+DOCROOT="${DOCROOT:-$HOME/logomarketing.dk}"   # /home/halsedis/logomarketing.dk
 
 cd "$REPO_DIR"
 git pull --ff-only
