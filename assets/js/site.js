@@ -1,4 +1,8 @@
 (function(){
+/* Gamle links med #/side sendes videre til de rigtige adresser */
+const OLD={'':'/','telte':'/reklametelte/','laser':'/dogtags/','merch':'/merchandise/','foreninger':'/foreninger/','vilkaar':'/handelsbetingelser/'};
+if(location.hash.startsWith('#/')){const k=location.hash.slice(2).split(/[?#]/)[0]; location.replace(OLD[k]||'/'); return}
+const PAGE=document.body.dataset.page||'home';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const PRICE=4999, DESIGN_D=3, PROD_D=25, SHIP_D=5, TOTAL_D=DESIGN_D+PROD_D+SHIP_D; // 33 dage
 const fmt=n=>n.toLocaleString('da-DK')+' kr.';
@@ -25,10 +29,12 @@ function calcSvg(){const w=walls; const dark='#0F1F2E'; const light='#C9CED3';
    '<text x="100" y="45" text-anchor="middle" font-family="Archivo" font-weight="700" font-size="9" fill="#fff" opacity=".8">'+(size==='3x6'?'3 × 6 m':'3 × 3 m')+'</text>';}
 function renderCalc(){
   const u=unitPrice(size,walls); const n=Math.max(qty,1);
+  if($('#calcUnit')){ /* prisberegneren findes kun på /reklametelte/ */
   $('#calcUnit').textContent=fmt(u); $('#calcIncl').textContent=fmtIncl(u);
   $('#calcRows').innerHTML='<div><span>Telt '+size.replace('x',' × ')+' m, tag med fuldt tryk</span><span>inkl.</span></div>'+(walls>0?'<div><span>'+T.label(walls)+' med tryk</span><span>inkl.</span></div>':'<div><span>Ingen vægge</span><span>–</span></div>')+'<div><span>Transporttaske med hjul og designopsætning</span><span>inkl.</span></div><div><span>Fragt</span><span>efter adresse</span></div>';
   $('#calcTotLbl').textContent=(qty>=4?'4+':n)+' '+(n===1?'telt':'telte')+' i alt, ekskl. moms'; $('#calcTot').textContent=fmt(u*n)+(qty>=4?' +':'');
   $('#calcSvg').innerHTML=calcSvg();
+  }
   $$('#sizeOpts .opt,#qSize .opt').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===size));
   $$('#wallOpts .opt,#qWalls .opt').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.w===walls));
   $$('#calcQty .opt').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.q===qty));
@@ -104,7 +110,7 @@ function qSummary(){
 const tentBlock=$('#tentBlock');
 function setTent(on){tentBlock.dataset.on=on?'1':'0'; $('#tentOn').setAttribute('aria-pressed',on); $('#tentOff').setAttribute('aria-pressed',!on); setQty(on?Math.max(qty,1):0)}
 $('#tentOn').addEventListener('click',()=>setTent(true)); $('#tentOff').addEventListener('click',()=>setTent(false));
-const tentFromHash=()=>{ if(location.hash.startsWith('#/telte')) setTent(true) }; setTent(false); tentFromHash(); window.addEventListener('hashchange',tentFromHash);
+setTent(PAGE==='telte');
 form.addEventListener('submit',async e=>{
   e.preventDefault(); const err=$('#qErr'); const org=$('#qOrg').value.trim(), name=$('#qName').value.trim(), mail=$('#qMail').value.trim();
   if(!org||!name||!/.+@.+\..+/.test(mail)){err.hidden=false; err.textContent='Vi mangler forening/virksomhed, navn og en gyldig e-mail for at kunne sende tilbuddet.'; return}
@@ -130,17 +136,9 @@ form.addEventListener('submit',async e=>{
   }finally{ btn.disabled=false; btn.textContent='Send – få mockup og tilbud'; }
 });
 
-/* ---------- Routing ---------- */
-let page='home';
-const TITLES={home:'LogoMarketing – reklametelte, dogtags og merchandise med jeres logo',telte:'Reklametelte med jeres logo – LogoMarketing',laser:'Lasergraverede dogtags fra Aulum – LogoMarketing',merch:'Merchandise med logo – LogoMarketing',foreninger:'Til foreninger: få teltet betalt af en sponsor – LogoMarketing',vilkaar:'Handelsbetingelser – LogoMarketing'};
-function showPage(pg){page=pg; document.title=TITLES[pg]||TITLES.home; const nl=$('#navLinks'); if(nl){nl.classList.remove('open'); $('#burger').setAttribute('aria-expanded','false')} $$('.page').forEach(p=>p.hidden=p.dataset.page!==pg); $$('[data-nav]').forEach(a=>{if(a.dataset.nav===pg) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current')})}
-function route(){
-  const h=location.hash||'#/';
-  if(h.startsWith('#/')){const pg=h.slice(2)||'home'; showPage(['telte','laser','merch','foreninger','vilkaar'].includes(pg)?pg:'home'); window.scrollTo({top:0,behavior:'instant'}); return}
-  // in-page anchor: keep current page, scroll to target
-  const el=document.getElementById(h.slice(1)); if(el){el.scrollIntoView({behavior:'smooth',block:'start'})}
-}
-window.addEventListener('hashchange',route); route();
+/* ---------- Ankre på siden (#tilbud, #faq …) ---------- */
+function toAnchor(){const id=location.hash.slice(1); const el=id&&document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'})}
+window.addEventListener('hashchange',toAnchor);
 if($('#burger')) $('#burger').addEventListener('click',()=>{const nl=$('#navLinks'); const o=nl.classList.toggle('open'); $('#burger').setAttribute('aria-expanded',o)});
 $$('#navLinks a').forEach(a=>a.addEventListener('click',()=>{$('#navLinks').classList.remove('open')}));
 setQty(1); syncMerch();

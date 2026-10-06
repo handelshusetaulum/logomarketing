@@ -6,4 +6,4 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/halsedis/logomarketing.dk/
     - /bin/cp -R index.html admin.html .htaccess robots.txt sitemap.xml $DEPLOYPATH
-    - /bin/cp -R t assets $DEPLOYPATH
+    - /bin/cp -R t assets reklametelte dogtags merchandise foreninger handelsbetingelser $DEPLOYPATH

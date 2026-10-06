@@ -1,9 +1,12 @@
 # logomarketing.dk
 
-Statisk site (HTML/CSS/JS, intet build-trin) + Supabase (database, login, filer) + Resend (mail).
+Statisk site (HTML/CSS/JS) + Supabase (database, login, filer) + Resend (mail).
 Hostes på Nordicway (cPanel, konto `halsedis` på cp17.nordicway.dk).
 
-- `index.html` – hele sitet (forside, telte, dogtags, merchandise, foreninger, vilkår) med hash-routing
+- `tools/side-skabelon.html` – **ret her**: alle offentlige sider i én fil
+- `tools/byg-sider.py` – kør `python3 tools/byg-sider.py` efter hver rettelse. Den skriver `index.html`,
+  `reklametelte/`, `dogtags/`, `merchandise/`, `foreninger/`, `handelsbetingelser/` og `sitemap.xml`
+  (hver side med egen titel, beskrivelse og canonical). Ret aldrig i de genererede filer.
 - `admin.html` – CRM (kræver login)
 - `t/` – kundens tilbuds- og ordreside (`/t/?k=KODE`)
 - `assets/js/config.js` – Supabase-URL, offentlig anon-nøgle og **teltpriser** (ét sted)

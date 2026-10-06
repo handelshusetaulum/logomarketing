@@ -19,22 +19,28 @@ DirectoryIndex index.html
   # Testversionen lå på /ny/ – gamle tilbudslinks (/ny/t/?k=…) skal stadig virke
   RewriteRule ^ny(/(.*))?$ https://%{HTTP_HOST}/$2 [R=301,L]
 
-  # Gamle WordPress-adresser → nye sider (NE = behold #)
-  RewriteRule ^(reklametelte|tents)/?$ https://%{HTTP_HOST}/#/telte [R=301,NE,L]
-  RewriteRule ^(dogtags|branded-dogtags)/?$ https://%{HTTP_HOST}/#/laser [R=301,NE,L]
-  RewriteRule ^logo-merchandise/?$ https://%{HTTP_HOST}/#/merch [R=301,NE,L]
+  # Sidernes rigtige adresser slutter med / (samme som den gamle WordPress-side)
+  RewriteRule ^(reklametelte|dogtags|merchandise|foreninger|handelsbetingelser)$ https://%{HTTP_HOST}/$1/ [R=301,L]
+  # .../index.html må ikke være en ekstra adresse for samme side
+  RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?]
+  RewriteRule ^(.*/)?index\.html$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+  # Gamle WordPress-adresser → nye sider
+  RewriteRule ^tents/?$ https://%{HTTP_HOST}/reklametelte/ [R=301,L]
+  RewriteRule ^branded-dogtags/?$ https://%{HTTP_HOST}/dogtags/ [R=301,L]
+  RewriteRule ^logo-merchandise/?$ https://%{HTTP_HOST}/merchandise/ [R=301,L]
+  RewriteRule ^til-foreninger/?$ https://%{HTTP_HOST}/foreninger/ [R=301,L]
+  RewriteRule ^(vilkaar|privatlivspolitik)/?$ https://%{HTTP_HOST}/handelsbetingelser/ [R=301,L]
   RewriteRule ^(fa-et-tilbud|contact|kontakt)/?$ https://%{HTTP_HOST}/#tilbud [R=301,NE,L]
   RewriteRule ^(about|om-os)/?$ https://%{HTTP_HOST}/#historie [R=301,NE,L]
   RewriteRule ^(home|blog|hello-world|category/.*)/?$ https://%{HTTP_HOST}/ [R=301,L]
-  RewriteRule ^(foreninger|til-foreninger)/?$ https://%{HTTP_HOST}/#/foreninger [R=301,NE,L]
-  RewriteRule ^(handelsbetingelser|vilkaar|privatlivspolitik)/?$ https://%{HTTP_HOST}/#/vilkaar [R=301,NE,L]
 
   # WordPress findes ikke længere – svar "væk" til bots, send billedlinks til forsiden
   RewriteRule ^(wp-login\.php|xmlrpc\.php|wp-admin/?.*)$ - [G,L]
   RewriteRule ^wp-content/ https://%{HTTP_HOST}/ [R=301,L]
 
   # Filer i repoet, der ikke skal kunne hentes
-  RewriteRule ^(supabase/|deploy\.sh|\.cpanel\.yml|.*\.md$) - [F,L]
+  RewriteRule ^(supabase/|tools/|brand/|deploy\.sh|\.cpanel\.yml|.*\.md$) - [F,L]
 </IfModule>
 
 <IfModule mod_headers.c>
