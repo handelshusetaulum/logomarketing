@@ -8,9 +8,9 @@
 <link rel="icon" href="../assets/img/logomarketing-ikon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Archivo:wdth,wght@75..100,400..700&family=Archivo+Black&display=swap">
-<link rel="stylesheet" href="../assets/css/site.css?v=20260929c">
+<link rel="stylesheet" href="../assets/css/site.css?v=20261006a">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="../assets/js/config.js?v=20260929c"></script>
+<script src="../assets/js/config.js?v=20261006a"></script>
 <style>
 .qwrap{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,56px) clamp(16px,4vw,40px)}
 .qcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:clamp(20px,3.5vw,36px);margin-top:1.4rem}
@@ -54,7 +54,7 @@
 </head>
 <body>
 <div class="qwrap">
-  <a class="brand" href="../" style="color:var(--ink)"><svg width="50" height="34" viewBox="0 0 88 60"><rect width="88" height="60" rx="12" fill="#0F1F2E"/><text x="44.5" y="39" text-anchor="middle" font-family="Archivo Black,Archivo,sans-serif" font-size="26" letter-spacing="1" fill="#F4F5F1">LOGO</text></svg><span class="lt">Marketing</span></a>
+  <a class="brand" href="../" style="color:var(--ink)"><svg width="50" height="34" viewBox="0 0 88 60"><rect width="88" height="60" rx="12" fill="#0F1F2E"/><path fill="#F4F5F1" d="M8.99 22.66H13.85V33.93H21.62V37.8H8.99Z M40 30.23Q40 34.06 37.86 36.06Q35.73 38.06 31.81 38.06Q27.9 38.06 25.77 36.07Q23.65 34.08 23.65 30.23Q23.65 26.38 25.77 24.39Q27.9 22.4 31.81 22.4Q35.73 22.4 37.86 24.4Q40 26.4 40 30.23ZM28.62 29.53V30.94Q28.62 32.54 29.44 33.49Q30.25 34.43 31.81 34.43Q33.38 34.43 34.2 33.49Q35.02 32.54 35.02 30.94V29.53Q35.02 27.92 34.2 26.98Q33.38 26.03 31.81 26.03Q30.25 26.03 29.44 26.98Q28.62 27.92 28.62 29.53Z M58.93 28.14H54.29Q54.29 27.2 53.45 26.61Q52.61 26.03 51.42 26.03Q49.71 26.03 48.83 26.94Q47.95 27.86 47.95 29.53V30.94Q47.95 32.61 48.83 33.52Q49.71 34.43 51.42 34.43Q52.61 34.43 53.45 33.87Q54.29 33.31 54.29 32.43H50.85V29.35H58.93V37.8H56.42L55.94 36.3Q53.87 38.06 50.52 38.06Q46.76 38.06 44.87 36.09Q42.98 34.13 42.98 30.23Q42.98 26.38 45.12 24.39Q47.27 22.4 51.23 22.4Q53.41 22.4 55.14 23.06Q56.88 23.72 57.9 25.01Q58.93 26.29 58.93 28.14Z M78.65 30.23Q78.65 34.06 76.52 36.06Q74.38 38.06 70.47 38.06Q66.55 38.06 64.43 36.07Q62.3 34.08 62.3 30.23Q62.3 26.38 64.43 24.39Q66.55 22.4 70.47 22.4Q74.38 22.4 76.52 24.4Q78.65 26.4 78.65 30.23ZM67.28 29.53V30.94Q67.28 32.54 68.09 33.49Q68.9 34.43 70.47 34.43Q72.03 34.43 72.85 33.49Q73.68 32.54 73.68 30.94V29.53Q73.68 27.92 72.85 26.98Q72.03 26.03 70.47 26.03Q68.9 26.03 68.09 26.98Q67.28 27.92 67.28 29.53Z"/></svg><span class="lt">Marketing</span></a>
   <div id="app" class="qcard"><p style="color:var(--muted)">Henter tilbud …</p></div>
   <p style="margin-top:1.4rem;font-size:.85rem;color:var(--muted)">LogoMarketing · Aulum · CVR 38147331 · <a href="mailto:info@logomarketing.dk">info@logomarketing.dk</a> · 97 47 31 78 · <a href="../#/vilkaar">Handelsbetingelser</a></p>
 </div>
@@ -66,7 +66,9 @@
   const code=new URLSearchParams(location.search).get('k')||location.pathname.split('/').filter(Boolean).pop();
   const sb=window.LM_SUPABASE; if(!sb){app.innerHTML='<p>Siden er ikke sat op endnu.</p>';return}
   if(!code){app.innerHTML='<p>Der mangler en tilbudskode i linket.</p>';return}
-  const {data:q,error}=await sb.from('quotes').select('*').eq('code',code).maybeSingle();
+  // Hent KUN dette tilbud via koden (patch 005). Falder tilbage til den gamle metode, indtil patchen er kørt.
+  let {data:q,error}=await sb.rpc('get_quote',{p_code:code});
+  if(error){ ({data:q,error}=await sb.from('quotes').select('*').eq('code',code).maybeSingle()); }
   if(error||!q){app.innerHTML='<h2>Vi kunne ikke finde tilbuddet</h2><p style="color:var(--muted);margin-top:.6rem">Tjek linket, eller skriv til <a href="mailto:info@logomarketing.dk">info@logomarketing.dk</a>.</p>';return}
   sb.rpc('mark_quote_seen',{p_code:code});
   const lines=q.lines||[]; const sub=lines.reduce((a,x)=>a+(+x.qty||0)*(+x.unit||0),0); const ship=+q.shipping||0; const tot=sub+ship; const moms=tot*0.25;
